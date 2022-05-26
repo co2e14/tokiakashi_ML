@@ -19,8 +19,8 @@ neg = list(data_dir.glob('neg/*'))
 pos = list(data_dir.glob('pos/*'))
 
 batch_size = 32
-img_width = 32 
-img_height = 24
+img_width = 320
+img_height = 240
 
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
   data_dir,
@@ -48,7 +48,7 @@ for images, labels in train_ds.take(1):
     plt.imshow(images[i].numpy().astype("uint8"))
     plt.title(class_names[labels[i]])
     plt.axis("off")
-    plt.show()
+plt.show()
 
 for image_batch, labels_batch in train_ds:
   print(image_batch.shape)
@@ -83,12 +83,18 @@ model.compile(optimizer='adam',
 
 model.summary()
 
+
+cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath="checkpoints/", verbose=1, save_weights_only=True, save_freq=5*batch_size)
+
 epochs=10
 history = model.fit(
   train_ds,
   validation_data=val_ds,
-  epochs=epochs
+  epochs=epochs,
+  callbacks=[cp_callback]
 )
+
+model.save("save/model")
 
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
