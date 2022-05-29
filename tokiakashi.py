@@ -6,7 +6,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
 import pathlib
-
+# tf.keras.mixed_precision.set_global_policy('mixed_float16') # only useful for 20XX+ GPUs
 rng.seed()
 
 #dataset_url = "https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz"
