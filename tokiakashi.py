@@ -1,32 +1,38 @@
 import matplotlib.pyplot as plt
-import numpy as np
-import os
-import PIL
 import tensorflow as tf
+import random as rng
 
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
 import pathlib
+
+rng.seed()
+
 #dataset_url = "https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz"
 #data_dir = tf.keras.utils.get_file('flower_photos', origin=dataset_url, untar=True)
-data_dir = pathlib.Path('C:/Users/ULTMT/Documents/ML_teaching')
+# data_dir = pathlib.Path('C:/Users/ULTMT/Documents/ML_teaching')
+data_dir = pathlib.Path('C:/Users/ULTMT/Documents/code/tokiakashi_ML/newstyle')
 
 image_count = len(list(data_dir.glob('*/*.png')))
 print(image_count)
 
-neg = list(data_dir.glob('neg/*'))
-pos = list(data_dir.glob('pos/*'))
+# neg = list(data_dir.glob('neg/*'))
+# pos = list(data_dir.glob('pos/*'))
+
+neg = list(data_dir.glob('negative/*'))
+pos = list(data_dir.glob('positive/*'))
+bor = list(data_dir.glob('border/*'))
 
 batch_size = 32
-img_width = 320
-img_height = 240
+img_width = 320 * 4
+img_height = 240 * 4
 
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
   data_dir,
   validation_split=0.2,
   subset="training",
-  seed=123,
+  seed=rng.randint(1,10000),
   image_size=(img_height, img_width),
   batch_size=batch_size)
 
@@ -72,6 +78,8 @@ model = Sequential([
   layers.MaxPooling2D(),
   layers.Conv2D(64, 3, padding='same', activation='relu'),
   layers.MaxPooling2D(),
+  layers.Conv2D(32, 3, padding='same', activation='relu'),
+  layers.MaxPooling2D(),
   layers.Flatten(),
   layers.Dense(128, activation='relu'),
   layers.Dense(num_classes)
@@ -84,7 +92,7 @@ model.compile(optimizer='adam',
 model.summary()
 
 
-cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath="checkpoints/", verbose=1, save_weights_only=True, save_freq=5*batch_size)
+cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath="checkpoints/", verbose=1, save_weights_only=True, save_freq=10*batch_size)
 
 epochs=10
 history = model.fit(
