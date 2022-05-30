@@ -25,8 +25,8 @@ pos = list(data_dir.glob('positive/*'))
 bor = list(data_dir.glob('border/*'))
 
 batch_size = 32
-img_width = 320 * 4
-img_height = 240 * 4
+img_width = 320 * 2
+img_height = 240 * 2
 
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
   data_dir,
@@ -81,7 +81,7 @@ model = Sequential([
   layers.Conv2D(32, 3, padding='same', activation='relu'),
   layers.MaxPooling2D(),
   layers.Flatten(),
-  layers.Dense(128, activation='relu'),
+  layers.Dense(64, activation='relu'),
   layers.Dense(num_classes)
 ])
 
